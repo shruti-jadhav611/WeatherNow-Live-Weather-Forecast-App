@@ -1,0 +1,172 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Weather App</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #222;
+    }
+
+    .card {
+      width: 90%;
+      max-width: 470px;
+      background: linear-gradient(135deg, #2193ea, #09a0b7);
+      color: #fff;
+      margin: 100px auto 0;
+      border-radius: 20px;
+      padding: 40px 35px;
+      text-align: center;
+      box-shadow: 0 0 30px rgba(0,0,0,0.5);
+    }
+
+    .search {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #ebfffc;
+      border-radius: 30px;
+      padding: 5px 10px;
+      margin-bottom: 20px;
+    }
+
+    .search input {
+      border: none;
+      outline: none;
+      background: none;
+      padding: 10px;
+      font-size: 16px;
+      flex: 1;
+    }
+
+    .search button {
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-size: 18px;
+      color: #333;
+    }
+
+    .search button i {
+      font-size: 20px;
+    }
+
+    .weather {
+      margin-top: 30px;
+    }
+
+    .weather-icon {
+      width: 100px;
+      margin-bottom: 10px;
+    }
+
+    .temp {
+      font-size: 50px;
+      font-weight: 600;
+    }
+
+    .city {
+      font-size: 30px;
+      margin-top: 5px;
+    }
+
+    .details {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+    }
+
+    .col {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .col i {
+      font-size: 30px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="search">
+      <input type="text" placeholder="Enter city name" spellcheck="false" id="city-input" />
+      <button onclick="getWeather()"><i class="bi bi-search"></i></button>
+    </div>
+    <div class="weather">
+      <img src="images/rain.png" class="weather-icon" alt="Weather Icon"> <!-- Default icon -->
+      <h1 class="temp">--°C</h1>
+      <h2 class="city">City</h2>
+      <div class="details">
+        <div class="col">
+          <i class="bi bi-droplet"></i>
+          <div>
+            <p class="humidity">--%</p>
+            <p>Humidity</p>
+          </div>
+        </div>
+        <div class="col">
+          <i class="bi bi-wind"></i>
+          <div>
+            <p class="wind">-- km/h</p>
+            <p>Wind Speed</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const apiKey = "3cd08745a05f7622da4a94b6d19450f7"; // 🔴 Replace this with your OpenWeatherMap API key
+    const apiUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+
+    async function getWeather() {
+      const city = document.getElementById("city-input").value;
+      if (!city) {
+        alert("Please enter a city name");
+        return;
+      }
+
+      const response = await fetch(apiUrl + city + `&appid=${apiKey}`);
+
+      if (response.status == 404) {
+        alert("City not found");
+        return;
+      }
+
+      const data = await response.json();
+
+      document.querySelector(".city").innerHTML = data.name;
+      document.querySelector(".temp").innerHTML = Math.round(data.main.temp) + "°C";
+      document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
+      document.querySelector(".wind").innerHTML = data.wind.speed + " km/h";
+
+      const weatherIcon = document.querySelector(".weather-icon");
+      const condition = data.weather[0].main;
+
+      // Use hosted placeholder icons
+    if (data.weather[0].main == "Clouds") {
+    weatherIcon.src = "images/clouds.png";
+  } else if (data.weather[0].main == "Clear") {
+    weatherIcon.src = "images/clear.png";
+  } else if (data.weather[0].main == "Rain") {
+    weatherIcon.src = "images/rain.png";
+  } else if (data.weather[0].main == "Snow") {
+    weatherIcon.src = "images/snow.png";
+  } else if (data.weather[0].main == "Mist") {
+    weatherIcon.src = "images/mist.png";
+  }
+}
+  </script>
+</body>
+</html>
